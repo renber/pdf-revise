@@ -8,34 +8,38 @@ The tool uses the com.itextpdf.itext and org.apache.pdfbox libraries.
 Call with: `java -jar pdf-revise.jar [input pdf file] [options]`
 ```
 Options:
-  --out
+  -o, --out
     Name of the output file.
     Default: [input pdf file].out.pdf
+  --pages
+    The pages to which operations should be applied to (e.g. 1,2-5,!3,6-10). 
+    All pages are kept in the pdf and only the selected will be modified.
+    Default: <empty string>
   --page-watermark
     Add a watermark to the background of every page
     Default: false
   --image-watermark
     Add a watermark over every image
     Default: false
+  --watermark-text
+    The watermark text
+    Default: DRAFT
   --page-watermark-layer
     Where to put the watermark text for pages (background or foreground)
     Default: background
     Possible Values: [foreground, fg, background, bg]
-  --watermark-text
-    The watermark text
-    Default: DRAFT
   --render
     Convert pages to images
     Default: false
   --dpi
     The DPI to render the pdf pages with
     Default: 120
-  --export
-    Export pages as images to the given folder
+  --render-to-folder
+    Render pages as images to the given folder
     Default: <empty string>
-  --pages
-    The pages to include in the output (e.g. 1,2-5,!3,6-10)
-    Default: <empty string>
+  --extract
+    Extract only the filtered pages from the pdf and copy them to the target
+    Default: false
   --append
     Append the given pdf file to the input file
     Default: <empty string>
