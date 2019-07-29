@@ -11,7 +11,7 @@ import java.util.List;
 
 public class PdfRevise {
 
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.1.0";
     public static final String COPYRIGHT = "Copyright 2019 Ren\u00E9 Bergelt";
 
     public static void main(String[] args) {

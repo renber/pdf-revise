@@ -31,12 +31,17 @@ Options:
     The DPI to render the pdf pages with
     Default: 120
   --export
-    Export pages as images to the given folder    
+    Export pages as images to the given folder
+    Default: <empty string>
   --pages
-    The pages to include in the output (e.g. 1,2-5,!3,6-10)    
+    The pages to include in the output (e.g. 1,2-5,!3,6-10)
+    Default: <empty string>
+  --append
+    Append the given pdf file to the input file
+    Default: <empty string>
   --disable-copy-paste
     Disables the Copy/Paste function in pdf readers
-    Default: false  
+    Default: false
 ```
 
 ## Example
