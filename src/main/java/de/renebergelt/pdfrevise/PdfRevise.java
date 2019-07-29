@@ -33,7 +33,7 @@ public class PdfRevise {
         JCommander cmd = JCommander.newBuilder()
                 .addObject(opt)
                 .build();
-        cmd.setProgramName("java -jar pdf-draft.jar");
+        cmd.setProgramName("java -jar pdf-revise.jar");
 
         // when no parameters are given, show usage help
         if (args.length == 0) {

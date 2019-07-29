@@ -8,7 +8,7 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class Options {
 
-        public static final String defaultOutFile = "[inFile].out.pdf";
+        public static final String defaultOutFile = "[input pdf file].out.pdf";
 
         @Parameter(required = true)
         public String inFile = "";
