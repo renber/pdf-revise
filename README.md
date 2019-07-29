@@ -10,31 +10,33 @@ Call with: `java -jar pdf-revise.jar [input pdf file] [options]`
 Options:
   --out
     Name of the output file.
-    Default: [inFile].out.pdf
+    Default: [input pdf file].out.pdf
   --page-watermark
     Add a watermark to the background of every page
     Default: false
   --image-watermark
     Add a watermark over every image
     Default: false
-  --watermark-text
-    The watermark text
-    Default: DRAFT
   --page-watermark-layer
     Where to put the watermark text for pages (background or foreground)
     Default: background
     Possible Values: [foreground, fg, background, bg]
+  --watermark-text
+    The watermark text
+    Default: DRAFT
   --render
     Convert pages to images
     Default: false
   --dpi
     The DPI to render the pdf pages with
     Default: 120
+  --export
+    Export pages as images to the given folder    
   --pages
     The pages to include in the output (e.g. 1,2-5,!3,6-10)    
   --disable-copy-paste
     Disables the Copy/Paste function in pdf readers
-    Default: false
+    Default: false  
 ```
 
 ## Example
