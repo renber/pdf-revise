@@ -12,25 +12,23 @@ import java.util.function.Consumer;
 /**
  * Extracts specific pages
  */
-public class SelectPages implements PdfTask {
-
-    String pageRange;
+public class ExtractPages implements PdfTask {
 
     @Override
     public String getDescription() {
-        return "Selecting pages";
+        return "Extracting pages";
     }
 
-    public SelectPages(String pageRange) {
-        this.pageRange = pageRange;
+    public ExtractPages() {
+
     }
 
     @Override
-    public void process(InputStream inStream, OutputStream outStream, Consumer<Float> progressCallback) throws TaskFailedException {
+    public void process(InputStream inStream, OutputStream outStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException {
         try {
             PdfReader reader = new PdfReader(inStream);
             PdfStamper stamper = new PdfStamper(reader, outStream);
-            reader.selectPages(pageRange);
+            reader.selectPages(filter.getPages(reader.getNumberOfPages()));
             stamper.close();
             progressCallback.accept(1.0f);
         } catch (IOException | DocumentException e) {

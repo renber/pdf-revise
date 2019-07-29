@@ -67,15 +67,18 @@ public class PdfRevise {
 
         List<PdfTask> tasks = new ArrayList<>();
 
-        if (!opt.pageSelector.isEmpty()) tasks.add(new SelectPages(opt.pageSelector));
+        PageFilter pageFilter = new NullPageFilter();
+        if (!opt.pageSelector.isEmpty()) pageFilter = new SequencePageFilter(opt.pageSelector);
 
         if (opt.addPageWatermark) tasks.add(new PageWatermarkStamper(opt.watermarkText, opt.pageWatermarkLayer));
         if (opt.addImageWatermark) tasks.add(new ImageWatermarkStamper(opt.watermarkText));
 
-        if (!opt.appendFilename.isEmpty()) tasks.add(new AppendPdf(opt.appendFilename));
-
-        if (!opt.exportToFolder.isEmpty()) tasks.add(new ExportPagesAsImages(opt.renderDpi, opt.exportToFolder));
+        if (!opt.renderToFolder.isEmpty()) tasks.add(new ExportPagesAsImages(opt.renderDpi, opt.renderToFolder));
         if (opt.renderPages) tasks.add(new RenderPages(opt.renderDpi));
+
+        if (opt.extractPages) tasks.add(new ExtractPages());
+
+        if (!opt.appendFilename.isEmpty()) tasks.add(new AppendPdf(opt.appendFilename));
 
         if (opt.disableCopyPaste) tasks.add(new DisableCopyPaste());
 
@@ -96,7 +99,7 @@ public class PdfRevise {
                 System.out.print(task.getDescription());
 
                 try (ByteArrayOutputStream bufStream = new ByteArrayOutputStream()) {
-                    task.process(inStream, bufStream, (p) -> System.out.print("."));
+                    task.process(inStream, bufStream, pageFilter, (p) -> System.out.print("."));
 
                     // the process result becomes the input stream for the next task
                     InputStream newStream = new ByteArrayInputStream(bufStream.toByteArray());

@@ -1,6 +1,7 @@
 package de.renebergelt.pdfrevise.tasks;
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -27,8 +28,13 @@ public class RenderPages implements PdfTask {
     }
 
     @Override
-    public void process(InputStream srcStream, OutputStream targetStream, Consumer<Float> progressCallback) {
+    public void process(InputStream srcStream, OutputStream targetStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException{
         try {
+
+            if (filter.getClass() != NullPageFilter.class) {
+                throw new TaskFailedException("Currently RenderPages does not support page filtering.", new IllegalArgumentException("filter"));
+            }
+
             // read page sizes from pdf
             // in a pdf each page can have a different size
             PdfReader reader = new PdfReader(srcStream);
@@ -42,7 +48,6 @@ public class RenderPages implements PdfTask {
             srcStream.reset();
 
             // render pages using pdfbox and write them using itext to a new document
-
             PDDocument inDocument = PDDocument.load(srcStream);
             PDFRenderer renderer = new PDFRenderer(inDocument);
 
@@ -54,6 +59,8 @@ public class RenderPages implements PdfTask {
             int pageCount = inDocument.getNumberOfPages();
 
             for(int p = 0; p < pageCount; p++) {
+
+                // Todo: if not included in filter -> copy original page instead of rendering it
                 BufferedImage pageImg = renderer.renderImageWithDPI(p, dpi, ImageType.RGB);
                 outDocument.setPageSize(pageSizes.get(p));
                 outDocument.newPage();
@@ -73,7 +80,7 @@ public class RenderPages implements PdfTask {
             outDocument.close();
             writer.close();
         } catch (IOException | DocumentException e) {
-            e.printStackTrace();
+            throw new TaskFailedException("Failed to render pages: " + e.getMessage(), e);
         }
     }
 

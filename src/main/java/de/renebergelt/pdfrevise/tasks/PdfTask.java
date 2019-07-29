@@ -8,6 +8,6 @@ public interface PdfTask {
 
     String getDescription();
 
-    void process(InputStream inStream, OutputStream outStream, Consumer<Float> progressCallback) throws TaskFailedException;
+    void process(InputStream inStream, OutputStream outStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException;
 
 }

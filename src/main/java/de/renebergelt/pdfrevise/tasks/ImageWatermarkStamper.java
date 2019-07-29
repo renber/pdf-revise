@@ -35,7 +35,7 @@ public class ImageWatermarkStamper implements PdfTask {
     }
 
     @Override
-    public void process(InputStream src, OutputStream dest, Consumer<Float> progressCallback) throws TaskFailedException {
+    public void process(InputStream src, OutputStream dest, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException {
         try {
             PdfReader reader = new PdfReader(src);
             PdfStamper stamper = new PdfStamper(reader, dest);
@@ -46,14 +46,16 @@ public class ImageWatermarkStamper implements PdfTask {
 
             for (int p = 1; p <= pageCount; p++) {
 
-                PdfImageCollector imageCollector = new PdfImageCollector();
-                parser.processContent(p, imageCollector);
+                if (filter.isPageInFilter(p)) {
+                    PdfImageCollector imageCollector = new PdfImageCollector();
+                    parser.processContent(p, imageCollector);
 
-                if (imageCollector.getImages().size() > 0) {
-                    PdfContentByte over;
-                    over = stamper.getOverContent(p);
-                    for (Rectangle rect : imageCollector.getImages()) {
-                        addWatermark(over, rect, watermarkText);
+                    if (imageCollector.getImages().size() > 0) {
+                        PdfContentByte over;
+                        over = stamper.getOverContent(p);
+                        for (Rectangle rect : imageCollector.getImages()) {
+                            addWatermark(over, rect, watermarkText);
+                        }
                     }
                 }
 

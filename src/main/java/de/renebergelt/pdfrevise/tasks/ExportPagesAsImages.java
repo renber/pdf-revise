@@ -32,7 +32,7 @@ public class ExportPagesAsImages implements PdfTask {
     }
 
     @Override
-    public void process(InputStream srcStream, OutputStream targetStream, Consumer<Float> progressCallback) {
+    public void process(InputStream srcStream, OutputStream targetStream, PageFilter filter, Consumer<Float> progressCallback) {
         try {
             // todo: create target folder if it does not exist
 
@@ -49,7 +49,6 @@ public class ExportPagesAsImages implements PdfTask {
             srcStream.reset();
 
             // render pages using pdfbox and write as image file
-
             PDDocument inDocument = PDDocument.load(srcStream);
             PDFRenderer renderer = new PDFRenderer(inDocument);
 
@@ -58,8 +57,10 @@ public class ExportPagesAsImages implements PdfTask {
             for(int p = 0; p < pageCount; p++) {
                 BufferedImage pageImg = renderer.renderImageWithDPI(p, dpi, ImageType.RGB);
 
-                try (FileOutputStream fStream = new FileOutputStream(targetFolder + "/" + String.valueOf(p + 1) + ".png")) {
-                    ImageIO.write(pageImg, "png", fStream);
+                if (filter.isPageInFilter(p+1)) {
+                    try (FileOutputStream fStream = new FileOutputStream(targetFolder + "/" + String.valueOf(p + 1) + ".png")) {
+                        ImageIO.write(pageImg, "png", fStream);
+                    }
                 }
 
                 progressCallback.accept( (p+1)/ (float)pageCount );

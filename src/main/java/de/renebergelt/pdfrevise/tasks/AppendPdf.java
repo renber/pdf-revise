@@ -23,7 +23,7 @@ public class AppendPdf implements PdfTask {
     }
 
     @Override
-    public void process(InputStream inStream, OutputStream outStream, Consumer<Float> progressCallback) throws TaskFailedException {
+    public void process(InputStream inStream, OutputStream outStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException {
         try {
             PDFMergerUtility merger = new PDFMergerUtility();
             merger.addSource(inStream);
