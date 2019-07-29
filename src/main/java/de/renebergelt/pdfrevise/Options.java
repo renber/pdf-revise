@@ -40,7 +40,10 @@ public class Options {
         @Parameter(names = {"--pages"}, description = "The pages to include in the output (e.g. 1,2-5,!3,6-10)", order = 7)
         public String pageSelector = "";
 
-        @Parameter(names = {"--disable-copy-paste"}, description = "Disables the Copy/Paste function in pdf readers", order = 8)
+        @Parameter(names = {"--append"}, description = "Append the given pdf file to the input file", order = 8)
+        public String appendFilename = "";
+
+        @Parameter(names = {"--disable-copy-paste"}, description = "Disables the Copy/Paste function in pdf readers", order = 9)
         public boolean disableCopyPaste = false;
 
         @Parameter(names = {"--help", "-?", "--?", "/?"}, help = true, description = "Show this help screen", order = 50)

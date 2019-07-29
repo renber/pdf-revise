@@ -12,7 +12,7 @@ import java.util.List;
 public class PdfRevise {
 
     public static final String VERSION = "1.0.0";
-    public static final String COPYRIGHT = "Copyright 2019 René Bergelt";
+    public static final String COPYRIGHT = "Copyright 2019 Ren\u00E9 Bergelt";
 
     public static void main(String[] args) {
 
@@ -72,8 +72,9 @@ public class PdfRevise {
         if (opt.addPageWatermark) tasks.add(new PageWatermarkStamper(opt.watermarkText, opt.pageWatermarkLayer));
         if (opt.addImageWatermark) tasks.add(new ImageWatermarkStamper(opt.watermarkText));
 
-        if (!opt.exportToFolder.isEmpty()) tasks.add(new ExportPagesAsImages(opt.renderDpi, opt.exportToFolder));
+        if (!opt.appendFilename.isEmpty()) tasks.add(new AppendPdf(opt.appendFilename));
 
+        if (!opt.exportToFolder.isEmpty()) tasks.add(new ExportPagesAsImages(opt.renderDpi, opt.exportToFolder));
         if (opt.renderPages) tasks.add(new RenderPages(opt.renderDpi));
 
         if (opt.disableCopyPaste) tasks.add(new DisableCopyPaste());
