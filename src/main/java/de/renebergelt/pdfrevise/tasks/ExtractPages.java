@@ -1,8 +1,13 @@
 package de.renebergelt.pdfrevise.tasks;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import de.renebergelt.pdfrevise.types.PageFilter;
+import de.renebergelt.pdfrevise.types.TaskFailedException;
+import de.renebergelt.pdfrevise.types.TaskOptions;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,19 +17,29 @@ import java.util.function.Consumer;
 /**
  * Extracts specific pages
  */
-public class ExtractPages implements PdfTask {
+public class ExtractPages implements PdfTask<ExtractPages.ExtractPagesOptions> {
 
     @Override
     public String getDescription() {
         return "Extracting pages";
     }
 
-    public ExtractPages() {
+    @Parameters(separators = "=", commandDescription = "Extract only the filtered pages from the pdf and copy them to the target")
+    public static class ExtractPagesOptions implements TaskOptions {
 
+        @Override
+        public String getCommandName() {
+            return "extract";
+        }
     }
 
     @Override
-    public void process(InputStream inStream, OutputStream outStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException {
+    public ExtractPagesOptions getDefaultOptions() {
+        return new ExtractPagesOptions();
+    }
+
+    @Override
+    public void process(ExtractPagesOptions options, InputStream inStream, OutputStream outStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException {
         try {
             PdfReader reader = new PdfReader(inStream);
             PdfStamper stamper = new PdfStamper(reader, outStream);

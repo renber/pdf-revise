@@ -1,9 +1,14 @@
 package de.renebergelt.pdfrevise.tasks;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
+import de.renebergelt.pdfrevise.types.NullPageFilter;
+import de.renebergelt.pdfrevise.types.PageFilter;
+import de.renebergelt.pdfrevise.types.TaskFailedException;
+import de.renebergelt.pdfrevise.types.TaskOptions;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -14,21 +19,32 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class RenderPages implements PdfTask {
-
-    int dpi;
+public class RenderPages implements PdfTask<RenderPages.RenderPagesOptions> {
 
     @Override
     public String getDescription() {
         return "Rendering pages";
     }
 
-    public RenderPages(int dpi) {
-        this.dpi = dpi;
+    @Parameters(separators = "=", commandDescription = "Add a watermark to every page")
+    public static class RenderPagesOptions implements TaskOptions {
+
+        @Override
+        public String getCommandName() {
+            return "render-pages";
+        }
+
+        @Parameter(names={"--dpi"}, description = "The DPI to render the pdf pages with")
+        public int renderDpi;
     }
 
     @Override
-    public void process(InputStream srcStream, OutputStream targetStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException{
+    public RenderPagesOptions getDefaultOptions() {
+        return new RenderPagesOptions();
+    }
+
+    @Override
+    public void process(RenderPagesOptions options, InputStream inStream, OutputStream outStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException {
         try {
 
             if (filter.getClass() != NullPageFilter.class) {
@@ -37,7 +53,7 @@ public class RenderPages implements PdfTask {
 
             // read page sizes from pdf
             // in a pdf each page can have a different size
-            PdfReader reader = new PdfReader(srcStream);
+            PdfReader reader = new PdfReader(inStream);
             java.util.List<Rectangle> pageSizes = new ArrayList<>();
             for(int i = 1; i <= reader.getNumberOfPages(); i++) {
                 pageSizes.add(reader.getPageSize(i));
@@ -45,14 +61,14 @@ public class RenderPages implements PdfTask {
             reader.close();
 
             // rewind the stream
-            srcStream.reset();
+            inStream.reset();
 
             // render pages using pdfbox and write them using itext to a new document
-            PDDocument inDocument = PDDocument.load(srcStream);
+            PDDocument inDocument = PDDocument.load(inStream);
             PDFRenderer renderer = new PDFRenderer(inDocument);
 
             Document outDocument = new Document();
-            PdfWriter writer = PdfWriter.getInstance(outDocument, targetStream);
+            PdfWriter writer = PdfWriter.getInstance(outDocument, outStream);
             outDocument.open();
             writer.open();
 
@@ -61,7 +77,7 @@ public class RenderPages implements PdfTask {
             for(int p = 0; p < pageCount; p++) {
 
                 // Todo: if not included in filter -> copy original page instead of rendering it
-                BufferedImage pageImg = renderer.renderImageWithDPI(p, dpi, ImageType.RGB);
+                BufferedImage pageImg = renderer.renderImageWithDPI(p, options.renderDpi, ImageType.RGB);
                 outDocument.setPageSize(pageSizes.get(p));
                 outDocument.newPage();
 

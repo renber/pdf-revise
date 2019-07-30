@@ -1,4 +1,4 @@
-package de.renebergelt.pdfrevise.tasks;
+package de.renebergelt.pdfrevise.types;
 
 /**
  * Thrown when the execution of a PdfTask fails

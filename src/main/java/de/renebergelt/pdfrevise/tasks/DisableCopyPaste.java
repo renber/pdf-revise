@@ -1,9 +1,13 @@
 package de.renebergelt.pdfrevise.tasks;
 
+import com.beust.jcommander.Parameters;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.PdfWriter;
+import de.renebergelt.pdfrevise.types.PageFilter;
+import de.renebergelt.pdfrevise.types.TaskFailedException;
+import de.renebergelt.pdfrevise.types.TaskOptions;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,15 +15,29 @@ import java.io.OutputStream;
 import java.util.Random;
 import java.util.function.Consumer;
 
-public class DisableCopyPaste implements PdfTask {
+public class DisableCopyPaste implements PdfTask<DisableCopyPaste.PdfPermissionsOptions> {
 
     @Override
     public String getDescription() {
         return "Disabling copy&paste";
     }
 
+    @Parameters(separators = "=", commandDescription = "Disables the Copy/Paste function in pdf readers")
+    public static class PdfPermissionsOptions implements TaskOptions {
+
+        @Override
+        public String getCommandName() {
+            return "disable-copy-paste";
+        }
+    }
+
     @Override
-    public void process(InputStream inStream, OutputStream outStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException {
+    public PdfPermissionsOptions getDefaultOptions() {
+        return new PdfPermissionsOptions();
+    }
+
+    @Override
+    public void process(PdfPermissionsOptions options, InputStream inStream, OutputStream outStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException {
         try {
             PdfReader reader = new PdfReader(inStream);
             PdfStamper stamper = new PdfStamper(reader, outStream);

@@ -1,9 +1,14 @@
 package de.renebergelt.pdfrevise.tasks;
 
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.parser.*;
+import de.renebergelt.pdfrevise.types.PageFilter;
+import de.renebergelt.pdfrevise.types.TaskFailedException;
+import de.renebergelt.pdfrevise.types.TaskOptions;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,9 +21,7 @@ import java.util.function.Consumer;
 /**
  * Grayscales all images of a pdf
  */
-public class ImageWatermarkStamper implements PdfTask {
-
-    String watermarkText;
+public class ImageWatermarkStamper implements PdfTask<ImageWatermarkStamper.ImageWatermarkOptions> {
 
     BufferedImage overlayImg;
 
@@ -27,18 +30,28 @@ public class ImageWatermarkStamper implements PdfTask {
         return "Adding watermark to images";
     }
 
-    public ImageWatermarkStamper(String watermarkText) {
-        if (watermarkText == null)
-            throw new IllegalArgumentException("Parameter watermarkText must not be null");
+    @Parameters(separators = "=", commandDescription = "Add a watermark over every image")
+    public static class ImageWatermarkOptions implements TaskOptions {
 
-        this.watermarkText = watermarkText;
+        @Override
+        public String getCommandName() {
+            return "add-image-watermark";
+        }
+
+        @Parameter(required = true, description = "The watermark text")
+        public String watermarkText = "DRAFT";
     }
 
     @Override
-    public void process(InputStream src, OutputStream dest, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException {
+    public ImageWatermarkOptions getDefaultOptions() {
+        return new ImageWatermarkOptions();
+    }
+
+    @Override
+    public void process(ImageWatermarkOptions options, InputStream inStream, OutputStream outStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException {
         try {
-            PdfReader reader = new PdfReader(src);
-            PdfStamper stamper = new PdfStamper(reader, dest);
+            PdfReader reader = new PdfReader(inStream);
+            PdfStamper stamper = new PdfStamper(reader, outStream);
 
             int pageCount = reader.getNumberOfPages();
 
@@ -46,7 +59,7 @@ public class ImageWatermarkStamper implements PdfTask {
 
             for (int p = 1; p <= pageCount; p++) {
 
-                if (filter.isPageInFilter(p)) {
+                if (filter.isPageInFilter(p, pageCount)) {
                     PdfImageCollector imageCollector = new PdfImageCollector();
                     parser.processContent(p, imageCollector);
 
@@ -54,7 +67,7 @@ public class ImageWatermarkStamper implements PdfTask {
                         PdfContentByte over;
                         over = stamper.getOverContent(p);
                         for (Rectangle rect : imageCollector.getImages()) {
-                            addWatermark(over, rect, watermarkText);
+                            addWatermark(over, rect, options.watermarkText);
                         }
                     }
                 }

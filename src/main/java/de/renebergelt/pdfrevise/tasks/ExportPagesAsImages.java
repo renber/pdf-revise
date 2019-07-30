@@ -1,11 +1,12 @@
 package de.renebergelt.pdfrevise.tasks;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfWriter;
+import de.renebergelt.pdfrevise.types.PageFilter;
+import de.renebergelt.pdfrevise.types.TaskFailedException;
+import de.renebergelt.pdfrevise.types.TaskOptions;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -16,29 +17,41 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public class ExportPagesAsImages implements PdfTask {
-
-    int dpi;
-    String targetFolder;
+public class ExportPagesAsImages implements PdfTask<ExportPagesAsImages.ExportPagesOptions> {
 
     @Override
     public String getDescription() {
-        return "Extracting pages";
+        return "Exporting pages";
     }
 
-    public ExportPagesAsImages(int dpi, String targetFolder) {
-        this.dpi = dpi;
-        this.targetFolder = targetFolder;
+    @Parameters(separators = "=", commandDescription = "Render pages as images to the given folder")
+    public static class ExportPagesOptions implements TaskOptions {
+
+        @Override
+        public String getCommandName() {
+            return "render-to-folder";
+        }
+
+        @Parameter(required=true, description = "The target folder to render pages to")
+        public String targetFolder;
+
+        @Parameter(names={"--dpi"}, description = "The DPI to render the pdf pages with")
+        public int renderDpi;
     }
 
     @Override
-    public void process(InputStream srcStream, OutputStream targetStream, PageFilter filter, Consumer<Float> progressCallback) {
+    public ExportPagesOptions getDefaultOptions() {
+        return new ExportPagesOptions();
+    }
+
+    @Override
+    public void process(ExportPagesOptions options, InputStream inStream, OutputStream outStream, PageFilter filter, Consumer<Float> progressCallback) throws TaskFailedException {
         try {
             // todo: create target folder if it does not exist
 
             // read page sizes from pdf
             // in a pdf each page can have a different size
-            PdfReader reader = new PdfReader(srcStream);
+            PdfReader reader = new PdfReader(inStream);
             java.util.List<Rectangle> pageSizes = new ArrayList<>();
             for(int i = 1; i <= reader.getNumberOfPages(); i++) {
                 pageSizes.add(reader.getPageSize(i));
@@ -46,19 +59,19 @@ public class ExportPagesAsImages implements PdfTask {
             reader.close();
 
             // rewind the stream
-            srcStream.reset();
+            inStream.reset();
 
             // render pages using pdfbox and write as image file
-            PDDocument inDocument = PDDocument.load(srcStream);
+            PDDocument inDocument = PDDocument.load(inStream);
             PDFRenderer renderer = new PDFRenderer(inDocument);
 
             int pageCount = inDocument.getNumberOfPages();
 
             for(int p = 0; p < pageCount; p++) {
-                BufferedImage pageImg = renderer.renderImageWithDPI(p, dpi, ImageType.RGB);
+                BufferedImage pageImg = renderer.renderImageWithDPI(p, options.renderDpi, ImageType.RGB);
 
-                if (filter.isPageInFilter(p+1)) {
-                    try (FileOutputStream fStream = new FileOutputStream(targetFolder + "/" + String.valueOf(p + 1) + ".png")) {
+                if (filter.isPageInFilter(p+1, pageCount)) {
+                    try (FileOutputStream fStream = new FileOutputStream(options.targetFolder + "/" + String.valueOf(p + 1) + ".png")) {
                         ImageIO.write(pageImg, "png", fStream);
                     }
                 }

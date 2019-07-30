@@ -1,9 +1,5 @@
-package de.renebergelt.pdfrevise.tasks;
+package de.renebergelt.pdfrevise.types;
 
-import com.itextpdf.text.pdf.PdfReader;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -14,7 +10,7 @@ import java.util.stream.IntStream;
 public class NullPageFilter implements PageFilter {
 
     @Override
-    public boolean isPageInFilter(int pageNumber) {
+    public boolean isPageInFilter(int pageNumber, int pageCount) {
         return true;
     }
 
