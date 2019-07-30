@@ -93,7 +93,7 @@ Call with: `java -jar pdf-revise.jar [input pdf file] [options] [command1] [comm
 
 ## Example
 
-Sample output for a pdf for options `--page-watermark --page-watermark-layer foreground --render --dpi 90`:
+Sample output for a pdf for options `add-page-watermark --layer=foreground render-pages --dpi 90`:
 
 PDF page, before (left) and after (right) processing:<br>
 <img src="doc/images/page_before.png" alt="PDF page before processing" width="40%" height="40%" /> <img src="doc/images/page_after.png" alt="PDF page after processing" width="40%" height="40%" />
