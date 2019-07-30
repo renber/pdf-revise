@@ -19,7 +19,7 @@ public class UpdatePageFilter implements PdfTask<UpdatePageFilter.PageFilterOpti
     public static class PageFilterOptions implements TaskOptions {
         @Override
         public String getCommandName() {
-            return "--pages";
+            return "pages";
         }
 
         @Parameter(required=true, description = "The pages to which the subsequent tasks should be applied to (e.g. 1,2-5,!3,6-10). All pages are kept in the pdf and only the selected will be modified.", order = 1)
