@@ -35,7 +35,7 @@ public class RenderPages implements PdfTask<RenderPages.RenderPagesOptions> {
         }
 
         @Parameter(names={"--dpi"}, description = "The DPI to render the pdf pages with")
-        public int renderDpi;
+        public int renderDpi = 150;
     }
 
     @Override

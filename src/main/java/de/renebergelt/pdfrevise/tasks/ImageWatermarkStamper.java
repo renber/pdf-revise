@@ -38,8 +38,8 @@ public class ImageWatermarkStamper implements PdfTask<ImageWatermarkStamper.Imag
             return "add-image-watermark";
         }
 
-        @Parameter(required = true, description = "The watermark text")
-        public String watermarkText = "DRAFT";
+        @Parameter(required = true, description = "[watermark text]")
+        public String watermarkText = "";
     }
 
     @Override

@@ -24,7 +24,7 @@ public class ExportPagesAsImages implements PdfTask<ExportPagesAsImages.ExportPa
         return "Exporting pages";
     }
 
-    @Parameters(separators = "=", commandDescription = "Render pages as images to the given folder")
+    @Parameters(separators = "=", commandDescription = "Render pages as images to the given folder (in png format)")
     public static class ExportPagesOptions implements TaskOptions {
 
         @Override
@@ -32,11 +32,11 @@ public class ExportPagesAsImages implements PdfTask<ExportPagesAsImages.ExportPa
             return "render-to-folder";
         }
 
-        @Parameter(required=true, description = "The target folder to render pages to")
+        @Parameter(required=true, description = "[target folder]")
         public String targetFolder;
 
         @Parameter(names={"--dpi"}, description = "The DPI to render the pdf pages with")
-        public int renderDpi;
+        public int renderDpi = 150;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.renebergelt.pdfrevise;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 import de.renebergelt.pdfrevise.types.TaskOptions;
 import org.apache.commons.io.FilenameUtils;
 
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * Command line options for pdf-draft
  */
+@Parameters(separators = "=")
 public class Options {
 
         public static final String defaultOutFile = "[input pdf file].out.pdf";

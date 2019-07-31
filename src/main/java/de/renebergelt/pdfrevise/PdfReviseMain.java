@@ -63,7 +63,9 @@ public class PdfReviseMain {
         cmd.usage(sb);
         String helpText = sb.toString();
 
+        // change the help text (there is no easy way to override cmd.usage() atm)
         helpText = helpText.replace("Commands", "Tasks");
+        helpText = helpText.replaceFirst("Options:", "Options: defined as --option_name=value\n  Task are executed in the order they appear n the command line");
         helpText = helpText.replaceFirst("\\[command\\]\\s+\\[command\\s+options\\]", "[task1] [task1 options] [task2] [task2 options] ...");
 
         System.out.println(helpText);

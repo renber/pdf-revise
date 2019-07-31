@@ -42,7 +42,7 @@ public class ReplaceText implements PdfTask<ReplaceText.ReplaceTextOptions> {
             return "replace-text";
         }
 
-        @Parameter(required = true, description = "The text to be replaced")
+        @Parameter(required = true, description = "[text to be replaced]")
         public String what = "";
 
         @Parameter(names = {"--with"}, description = "The text to insert")

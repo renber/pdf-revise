@@ -27,10 +27,10 @@ public class PageWatermarkStamper implements PdfTask<PageWatermarkStamper.PageWa
             return "add-page-watermark";
         }
 
-        @Parameter(required = true, description = "The watermark text")
-        public String watermarkText = "DRAFT";
+        @Parameter(required = true, description = "[watermark text]")
+        public String watermarkText = "";
 
-        @Parameter(names = {"--layer"}, description = "Where to put the watermark text for pages (background or foreground)")
+        @Parameter(names = {"--layer"}, description = "Where to put the watermark text")
         public StampLayer watermarkLayer = StampLayer.BACKGROUND;
     }
 

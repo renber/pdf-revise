@@ -15,14 +15,14 @@ import java.util.function.Consumer;
  */
 public class UpdatePageFilter implements PdfTask<UpdatePageFilter.PageFilterOptions> {
 
-    @Parameters(separators = "=", commandDescription = "Specifies the pages to which subsequent tasks should be applied")
+    @Parameters(separators = "=", commandDescription = "Specifies the pages to which subsequent tasks should be applied.")
     public static class PageFilterOptions implements TaskOptions {
         @Override
         public String getTaskVerb() {
             return "pages";
         }
 
-        @Parameter(required=true, description = "The pages to which the subsequent tasks should be applied to (e.g. 1,2-5,!3,6-10). All pages are kept in the pdf and only the selected will be modified.", order = 1)
+        @Parameter(required=true, description = "[page sequence (e.g. 1,2-5,!3,6-10)]", order = 1)
         public String pageSelector = "";
     }
 

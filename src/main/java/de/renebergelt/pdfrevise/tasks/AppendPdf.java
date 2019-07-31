@@ -23,7 +23,7 @@ public class AppendPdf implements PdfTask<AppendPdf.AppendOptions> {
             return "append";
         }
 
-        @Parameter(required=true, description = "The pdf file to append")
+        @Parameter(required=true, description = "[file to append]")
         public String fileToAppend;
     }
 
