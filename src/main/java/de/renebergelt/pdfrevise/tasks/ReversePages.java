@@ -67,7 +67,4 @@ public class ReversePages implements PdfTask<ReversePages.ReversePagesOptions>  
             throw new TaskFailedException("Page selection failed: " + e.getMessage(), e);
         }
     }
-
-
-
 }
