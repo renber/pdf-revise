@@ -16,7 +16,7 @@ public abstract class FontOptions implements TaskOptions {
     @Parameter(names = {"--font"}, description = "The font to use")
     public String fontName = "Helvetica";
 
-    @Parameter(names = {"--font-color"}, description = "The font color to use", converter = ColorConverter.class)
+    @Parameter(names = {"--font-color"}, description = "The font color to use (name or in hex format (e.g. #FFFFFF))", converter = ColorConverter.class)
     public Color fontColor = Color.BLACK;
 
     /**
