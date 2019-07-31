@@ -5,26 +5,24 @@ Originally, it was developed to create a non-editable draft copy of a pdf by add
 The tool uses the com.itextpdf.itext and org.apache.pdfbox libraries.
 
 ## Usage
-Call with: `java -jar pdf-revise.jar [input pdf file] [options] [command1] [command1 options] [command2] [command2 options] ...`
-```
-  Options:
+Call with: `java -jar pdf-revise.jar [input pdf file] [options] [task1] [task1 options] [task2] [task2 options] ... `
+```  
+  Options: defined as --option_name=value
+  Tasks are executed in the order they appear n the command line
     -o, --out
       Name of the output file.
       Default: [input pdf file].out.pdf
     --help, -?, --?, /?
       Show this help screen
-  Commands:
+  Tasks:
     add-image-watermark      Add a watermark over every image
-      Usage: add-image-watermark The watermark text
+      Usage: add-image-watermark [watermark text]
 
-    add-page-watermark      Add a watermark to every page
-      Usage: add-page-watermark [options] The watermark text
-        Options:
-          --layer
-            Where to put the watermark text for pages (background or 
-            foreground) 
-            Default: background
-            Possible Values: [foreground, fg, background, bg]
+    append      Appends the specified pdf file
+      Usage: append [file to append]
+
+    disable-copy-paste      Disables the Copy/Paste function in pdf readers
+      Usage: disable-copy-paste
 
     add-page-numbers      Adds page numbers
       Usage: add-page-numbers [options]
@@ -37,7 +35,7 @@ Call with: `java -jar pdf-revise.jar [input pdf file] [options] [command1] [comm
             Default: java.awt.Color[r=0,g=0,b=0]
           --font-size
             The font size to use
-            Default: 10.0
+            Default: 10
           -h, --horizontal
             Horizontal alignment on the page
             Default: center
@@ -65,35 +63,43 @@ Call with: `java -jar pdf-revise.jar [input pdf file] [options] [command1] [comm
         Options:
           --dpi
             The DPI to render the pdf pages with
-            Default: 0
+            Default: 150
+
+    replace-text      Replaces text in a pdf (experimental!)
+      Usage: replace-text [options] [text to be replaced]
+        Options:
+          --with
+            The text to insert
+            Default: <empty string>
+
+    add-page-watermark      Add a watermark to every page
+      Usage: add-page-watermark [options] [watermark text]
+        Options:
+          --layer
+            Where to put the watermark text
+            Default: background
+            Possible Values: [foreground, fg, background, bg]
+
+    render-to-folder      Render pages as images to the given folder (in png 
+            format) 
+      Usage: render-to-folder [options] [target folder]
+        Options:
+          --dpi
+            The DPI to render the pdf pages with
+            Default: 150
 
     extract      Extract only the filtered pages from the pdf and copy them to 
             the target
       Usage: extract
 
-    append      Appends the specified pdf file
-      Usage: append The pdf file to append
-
-    render-to-folder      Render pages as images to the given folder
-      Usage: render-to-folder [options] The target folder to render pages to
-        Options:
-          --dpi
-            The DPI to render the pdf pages with
-            Default: 0
-
-    disable-copy-paste      Disables the Copy/Paste function in pdf readers
-      Usage: disable-copy-paste
-
     pages      Specifies the pages to which subsequent tasks should be 
-            applied 
-      Usage: pages The pages to which the subsequent tasks should be applied 
-            to (e.g. 1,2-5,!3,6-10). All pages are kept in the pdf and only 
-            the selected will be modified.
+            applied. 
+      Usage: pages [page sequence (e.g. 1,2-5,!3,6-10)]
 ```
 
 ## Example
 
-Sample output for a pdf for options `add-page-watermark --layer=foreground render-pages --dpi 90`:
+Sample output for a pdf for options `add-page-watermark --layer=foreground render-pages --dpi=90`:
 
 PDF page, before (left) and after (right) processing:<br>
 <img src="doc/images/page_before.png" alt="PDF page before processing" width="40%" height="40%" /> <img src="doc/images/page_after.png" alt="PDF page after processing" width="40%" height="40%" />
