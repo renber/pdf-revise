@@ -26,7 +26,7 @@ public class RenderPages implements PdfTask<RenderPages.RenderPagesOptions> {
         return "Rendering pages";
     }
 
-    @Parameters(separators = "=", commandDescription = "Add a watermark to every page")
+    @Parameters(separators = "=", commandDescription = "Replace page contents by a rendered image of the page")
     public static class RenderPagesOptions implements TaskOptions {
 
         @Override
