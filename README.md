@@ -7,6 +7,9 @@ The tool uses the com.itextpdf.itext and org.apache.pdfbox libraries.
 ## Usage
 Call with: `java -jar pdf-revise.jar [input pdf file] [options] [task1] [task1 options] [task2] [task2 options] ... `
 ```  
+pdfdraft 1.1.0
+Copyright 2019 René Bergelt
+Usage: java -jar pdf-revise.jar [input pdf file] [options] [task1] [task1 options] [task2] [task2 options] ... 
   Options: defined as --option_name=value
   Tasks are executed in the order they appear n the command line
     -o, --out
@@ -15,14 +18,15 @@ Call with: `java -jar pdf-revise.jar [input pdf file] [options] [task1] [task1 o
     --help, -?, --?, /?
       Show this help screen
   Tasks:
-    add-image-watermark      Add a watermark over every image
-      Usage: add-image-watermark [watermark text]
+    reverse-pages      Reverses the order of pages
+      Usage: reverse-pages
 
-    append      Appends the specified pdf file
-      Usage: append [file to append]
-
-    disable-copy-paste      Disables the Copy/Paste function in pdf readers
-      Usage: disable-copy-paste
+    replace-text      Replaces text in a pdf (experimental!)
+      Usage: replace-text [options] [text to be replaced]
+        Options:
+          --with
+            The text to insert
+            Default: <empty string>
 
     add-page-numbers      Adds page numbers
       Usage: add-page-numbers [options]
@@ -31,7 +35,7 @@ Call with: `java -jar pdf-revise.jar [input pdf file] [options] [task1] [task1 o
             The font to use
             Default: Helvetica
           --font-color
-            The font color to use
+            The font color to use (name or in hex format (e.g. #FFFFFF))
             Default: java.awt.Color[r=0,g=0,b=0]
           --font-size
             The font size to use
@@ -58,28 +62,6 @@ Call with: `java -jar pdf-revise.jar [input pdf file] [options] [task1] [task1 o
             Vertical margin
             Default: 20.0
 
-    render-pages      Replace page contents by a rendered image of the page
-      Usage: render-pages [options]
-        Options:
-          --dpi
-            The DPI to render the pdf pages with
-            Default: 150
-
-    replace-text      Replaces text in a pdf (experimental!)
-      Usage: replace-text [options] [text to be replaced]
-        Options:
-          --with
-            The text to insert
-            Default: <empty string>
-
-    add-page-watermark      Add a watermark to every page
-      Usage: add-page-watermark [options] [watermark text]
-        Options:
-          --layer
-            Where to put the watermark text
-            Default: background
-            Possible Values: [foreground, fg, background, bg]
-
     render-to-folder      Render pages as images to the given folder (in png 
             format) 
       Usage: render-to-folder [options] [target folder]
@@ -92,9 +74,33 @@ Call with: `java -jar pdf-revise.jar [input pdf file] [options] [task1] [task1 o
             the target
       Usage: extract
 
+    render-pages      Replace page contents by a rendered image of the page
+      Usage: render-pages [options]
+        Options:
+          --dpi
+            The DPI to render the pdf pages with
+            Default: 150
+
     pages      Specifies the pages to which subsequent tasks should be 
             applied. 
       Usage: pages [page sequence (e.g. 1,2-5,!3,6-10)]
+
+    disable-copy-paste      Disables the Copy/Paste function in pdf readers
+      Usage: disable-copy-paste
+
+    add-image-watermark      Add a watermark over every image
+      Usage: add-image-watermark [watermark text]
+
+    add-page-watermark      Add a watermark to every page
+      Usage: add-page-watermark [options] [watermark text]
+        Options:
+          --layer
+            Where to put the watermark text
+            Default: background
+            Possible Values: [foreground, fg, background, bg]
+
+    append      Appends the specified pdf file
+      Usage: append [file to append]
 ```
 
 ## Example
