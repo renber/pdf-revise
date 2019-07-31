@@ -58,7 +58,7 @@ Call with: `java -jar pdf-revise.jar [input pdf file] [options] [task1] [task1 o
             Vertical margin
             Default: 20.0
 
-    render-pages      Add a watermark to every page
+    render-pages      Replace page contents by a rendered image of the page
       Usage: render-pages [options]
         Options:
           --dpi
