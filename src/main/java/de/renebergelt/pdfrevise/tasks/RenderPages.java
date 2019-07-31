@@ -30,7 +30,7 @@ public class RenderPages implements PdfTask<RenderPages.RenderPagesOptions> {
     public static class RenderPagesOptions implements TaskOptions {
 
         @Override
-        public String getCommandName() {
+        public String getTaskVerb() {
             return "render-pages";
         }
 

@@ -6,6 +6,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import de.renebergelt.pdfrevise.types.FontOptions;
 import de.renebergelt.pdfrevise.types.PageFilter;
+import de.renebergelt.pdfrevise.types.PdfFontFactory;
 import de.renebergelt.pdfrevise.types.TaskFailedException;
 import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 
@@ -18,7 +19,7 @@ public class AddPageNumbers implements PdfTask<AddPageNumbers.PageNumberOptions>
     @Parameters(separators = "=", commandDescription = "Adds page numbers")
     public static class PageNumberOptions extends FontOptions {
         @Override
-        public String getCommandName() {
+        public String getTaskVerb() {
             return "add-page-numbers";
         }
 
@@ -72,11 +73,9 @@ public class AddPageNumbers implements PdfTask<AddPageNumbers.PageNumberOptions>
                 if (filter.isPageInFilter(p, pageCount)) {
                     String pageNumberText = getPageNumberText(options.pageNumberStyle, currentPageNumber);
 
-                    float fontsize = options.fontSize;
-                    // todo support font name
-                    Font f = new Font(Font.FontFamily.HELVETICA, fontsize);
-                    f.setColor(new BaseColor(options.fontColor.getRed(), options.fontColor.getGreen(), options.fontColor.getBlue()));
-                    Phrase phrase = new Phrase(pageNumberText, f);
+                    java.awt.Font font = new java.awt.Font(options.fontName, java.awt.Font.PLAIN, options.fontSize);
+                    Font pdfFont = PdfFontFactory.convertFont(font, options.fontColor);
+                    Phrase phrase = new Phrase(pageNumberText, pdfFont);
 
                     float x = options.horizontalAlignment.getValue(pagesize.getWidth(), options.horizontalMargin, false);
                     float y = options.verticalAlignment.getValue(pagesize.getHeight(), options.verticalMargin, true);

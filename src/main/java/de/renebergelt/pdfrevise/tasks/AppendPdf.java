@@ -19,7 +19,7 @@ public class AppendPdf implements PdfTask<AppendPdf.AppendOptions> {
     @Parameters(separators = "=", commandDescription = "Appends the specified pdf file")
     public static class AppendOptions implements TaskOptions {
         @Override
-        public String getCommandName() {
+        public String getTaskVerb() {
             return "append";
         }
 

@@ -28,7 +28,7 @@ public class ExtractPages implements PdfTask<ExtractPages.ExtractPagesOptions> {
     public static class ExtractPagesOptions implements TaskOptions {
 
         @Override
-        public String getCommandName() {
+        public String getTaskVerb() {
             return "extract";
         }
     }

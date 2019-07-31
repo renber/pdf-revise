@@ -23,7 +23,7 @@ public class PageWatermarkStamper implements PdfTask<PageWatermarkStamper.PageWa
     public static class PageWatermarkOptions implements TaskOptions {
 
         @Override
-        public String getCommandName() {
+        public String getTaskVerb() {
             return "add-page-watermark";
         }
 

@@ -18,7 +18,7 @@ public class UpdatePageFilter implements PdfTask<UpdatePageFilter.PageFilterOpti
     @Parameters(separators = "=", commandDescription = "Specifies the pages to which subsequent tasks should be applied")
     public static class PageFilterOptions implements TaskOptions {
         @Override
-        public String getCommandName() {
+        public String getTaskVerb() {
             return "pages";
         }
 

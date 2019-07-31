@@ -34,7 +34,7 @@ public class ImageWatermarkStamper implements PdfTask<ImageWatermarkStamper.Imag
     public static class ImageWatermarkOptions implements TaskOptions {
 
         @Override
-        public String getCommandName() {
+        public String getTaskVerb() {
             return "add-image-watermark";
         }
 

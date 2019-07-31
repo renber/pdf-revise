@@ -51,6 +51,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
       <artifactId>bcpkix-jdk15on</artifactId>
       <version>1.50</version>
     </dependency>
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>0.9.11</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -60,7 +65,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
       <configuration>
         <archive>
           <manifest>
-            <mainClass>de.renebergelt.pdfrevise.PdfRevise</mainClass>
+            <mainClass>de.renebergelt.pdfrevise.PdfReviseMain</mainClass>
           </manifest>
         </archive>
          <finalName>pdf-revise</finalName>                

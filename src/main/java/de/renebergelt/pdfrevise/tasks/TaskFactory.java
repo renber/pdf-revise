@@ -1,11 +1,9 @@
 package de.renebergelt.pdfrevise.tasks;
 
 import de.renebergelt.pdfrevise.types.TaskOptions;
+import org.reflections.Reflections;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class TaskFactory {
 
@@ -17,22 +15,23 @@ public class TaskFactory {
     }
 
     private void discoverTasks() {
-        availableTasks.add(new ImageWatermarkStamper());
-        availableTasks.add(new PageWatermarkStamper());
-        availableTasks.add(new AddPageNumbers());
+        // find all tasks by searching classes which implement the PdfTask interface
+        Reflections reflections = new Reflections("de.renebergelt.pdfrevise.tasks");
+        Set<Class<? extends PdfTask>> taskClasses =  reflections.getSubTypesOf(PdfTask.class);
 
-        availableTasks.add(new RenderPages());
-
-        availableTasks.add(new ExtractPages());
-        availableTasks.add(new AppendPdf());
-        availableTasks.add(new ExportPagesAsImages());
-
-        availableTasks.add(new DisableCopyPaste());
-
-        availableTasks.add(new UpdatePageFilter());
+        for(Class<? extends PdfTask> taskClass: taskClasses) {
+            try {
+                PdfTask task = taskClass.newInstance();
+                availableTasks.add(task);
+            } catch (InstantiationException e) {
+                // todo: log
+            } catch (IllegalAccessException e) {
+                // todo: log
+            }
+        }
 
         for(PdfTask task: availableTasks) {
-            String verb = task.getDefaultOptions().getCommandName();
+            String verb = task.getDefaultOptions().getTaskVerb();
             taskVerbs.put(verb, task);
         }
     }

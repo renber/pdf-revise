@@ -26,7 +26,7 @@ public class DisableCopyPaste implements PdfTask<DisableCopyPaste.PdfPermissions
     public static class PdfPermissionsOptions implements TaskOptions {
 
         @Override
-        public String getCommandName() {
+        public String getTaskVerb() {
             return "disable-copy-paste";
         }
     }

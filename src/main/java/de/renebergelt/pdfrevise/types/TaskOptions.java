@@ -6,7 +6,7 @@ package de.renebergelt.pdfrevise.types;
 public interface TaskOptions {
 
     /**
-     * Get the name of the command which activates this Task
+     * Get command line verb verb which represents this task
      */
-    String getCommandName();
+    String getTaskVerb();
 }

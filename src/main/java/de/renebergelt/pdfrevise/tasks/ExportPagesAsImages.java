@@ -28,7 +28,7 @@ public class ExportPagesAsImages implements PdfTask<ExportPagesAsImages.ExportPa
     public static class ExportPagesOptions implements TaskOptions {
 
         @Override
-        public String getCommandName() {
+        public String getTaskVerb() {
             return "render-to-folder";
         }
 
