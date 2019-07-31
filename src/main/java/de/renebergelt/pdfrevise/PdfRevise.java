@@ -17,7 +17,7 @@ public class PdfRevise {
     /**
      * Run PdfRevise with specified options
      */
-    public void run(Options opt, TaskFactory taskFactory) {
+    public void run(Options opt, TaskFactory taskFactory) throws TaskFailedException {
         try (InputStream inStream = new FileInputStream(opt.inFile);
              FileOutputStream outStream = new FileOutputStream(opt.outFile)) {
             run(inStream, outStream, opt.getTasks(), taskFactory);
@@ -31,7 +31,7 @@ public class PdfRevise {
     /**
      * Run the given tasks on inStream and write the result to outStream
      */
-    public void run(InputStream inStream, OutputStream outStream, List<TaskOptions> tasks, TaskFactory taskFactory) {
+    public void run(InputStream inStream, OutputStream outStream, List<TaskOptions> tasks, TaskFactory taskFactory) throws TaskFailedException {
         PageFilter pageFilter = new NullPageFilter();
 
         if (tasks.size() == 0) {
@@ -57,11 +57,12 @@ public class PdfRevise {
                     InputStream newStream = new ByteArrayInputStream(bufStream.toByteArray());
                     IOUtils.closeQuietly(inStream);
                     inStream = newStream;
-                } catch (TaskFailedException | IOException e) {
+                } catch (IOException e) {
                     throw new RuntimeException(e);
+                } finally {
+                    System.out.println();
                 }
-
-                System.out.println();
+                
                 taskNumber++;
             }
         }

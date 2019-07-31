@@ -3,6 +3,7 @@ package de.renebergelt.pdfrevise.tasks;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 import de.renebergelt.pdfrevise.types.NullPageFilter;

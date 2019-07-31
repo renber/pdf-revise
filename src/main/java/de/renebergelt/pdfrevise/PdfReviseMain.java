@@ -30,6 +30,8 @@ public class PdfReviseMain {
             }
         } catch (ParameterException e) {
             System.out.println("Wrong command line options: " + e.getMessage());
+        } catch (TaskFailedException e) {
+            System.out.println("Error while executing task: " + e.getMessage());
         }
     }
 
