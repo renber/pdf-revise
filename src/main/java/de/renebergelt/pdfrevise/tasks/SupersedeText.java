@@ -67,7 +67,7 @@ public class SupersedeText implements PdfTask<SupersedeText.SupersedeTextOptions
                     for (LocationTextExtractionStrategyEx.SearchResult result : strategy.getSearchResults()) {
                         System.out.println("Found at: " + result.getLeft() + ", " + result.getBottom() + " " + result.getWidth() + "x" + result.getHeight());
 
-                        cleanUpLocations.add(new PdfCleanUpLocation(p, result.getBounds(), BaseColor.WHITE));
+                        cleanUpLocations.add(new PdfCleanUpLocation(p, result.getBaselineBounds(), BaseColor.WHITE));
                     }
 
                     // remove original occurences of the word

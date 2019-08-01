@@ -156,7 +156,7 @@ public class LocationTextExtractionStrategyEx extends LocationTextExtractionStra
         }
 
         public float getBaselineY() {
-            // return Y of Baseline of the first letter
+            // return baseline Y of the first letter
             return textRenderInfo.get(0).getBaseline().getStartPoint().get(Vector.I2);
         }
 
@@ -165,14 +165,19 @@ public class LocationTextExtractionStrategyEx extends LocationTextExtractionStra
             return textRenderInfo.get(textRenderInfo.size() - 1).getAscentLine().getEndPoint().get(Vector.I1) - textRenderInfo.get(0).getAscentLine().getStartPoint().get(Vector.I1);
         }
 
-        public float getHeight() {
-            // maximum ascent - minimum descent
+        public float getMaxAscent() {
             float maxAsc = 0;
-            float minDesc = getBottom();
             for(TextRenderInfo letter: textRenderInfo) {
                 float asc = letter.getAscentLine().getStartPoint().get(Vector.I2);
                 if (asc > maxAsc) maxAsc = asc;
             }
+            return maxAsc;
+        }
+
+        public float getHeight() {
+            // maximum ascent - minimum descent
+            float maxAsc = getMaxAscent();
+            float minDesc = getBottom();
 
             // ascent is relative to the baseline
             return maxAsc + (getBaselineY() - getBottom()) - minDesc;
@@ -193,8 +198,7 @@ public class LocationTextExtractionStrategyEx extends LocationTextExtractionStra
          * Return a rectangle which extends from the baseline
          */
         public Rectangle getBaselineBounds() {
-            float descend = getBaselineY() - getBottom();
-            return new Rectangle(getLeft(), getBaselineY(), getLeft() + getWidth(), getBaselineY() + getHeight() - descend);
+            return new Rectangle(getLeft(), getBaselineY(), getLeft() + getWidth(), getMaxAscent());
         }
 
         /**
