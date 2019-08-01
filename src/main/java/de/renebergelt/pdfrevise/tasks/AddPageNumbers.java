@@ -32,13 +32,13 @@ public class AddPageNumbers implements PdfTask<AddPageNumbers.PageNumberOptions>
         @Parameter(names = {"-v", "--vertical"}, description = "Vertical alignment on the page")
         public TextAlignment verticalAlignment = TextAlignment.FAR;
 
-        @Parameter(names = {"--vertical-margin"}, description = "Vertical margin")
+        @Parameter(names = {"--vertical-margin", "--v-margin"}, description = "Vertical margin")
         public float verticalMargin = 20;
 
         @Parameter(names = {"-h", "--horizontal"}, description = "Horizontal alignment on the page")
         public TextAlignment horizontalAlignment = TextAlignment.CENTER;
 
-        @Parameter(names = {"--horizontal-margin"}, description = "Horizontal margin")
+        @Parameter(names = {"--horizontal-margin", "--h-margin"}, description = "Horizontal margin")
         public float horizontalMargin = 20;
     }
 
