@@ -157,3 +157,14 @@ Zoomed at 400%, before (left) and after (right) processing:<br>
 The project uses maven, so compiling and creating an executable jar is easy.
 Calling `mvn package` will package the tool and all dependencies in a single jar which can be executed.
 
+## Planned features
+
+The following features are planned to be included in the future:
+* form filling
+* adding images
+* extracting images
+* adding primitive elements (rectangles, lines ...)
+* adding arbitrary text
+* rotating pages
+* editing meta data
+
