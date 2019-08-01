@@ -4,7 +4,6 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.parser.*;
 import com.itextpdf.text.pdf.pdfcleanup.PdfCleanUpLocation;
@@ -12,7 +11,6 @@ import com.itextpdf.text.pdf.pdfcleanup.PdfCleanUpProcessor;
 import de.renebergelt.pdfrevise.textextraction.LocationTextExtractionStrategyEx;
 import de.renebergelt.pdfrevise.types.*;
 
-import java.awt.*;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -39,7 +37,7 @@ public class SupersedeText implements PdfTask<SupersedeText.SupersedeTextOptions
         @Parameter(names = {"--with"}, description = "text to insert")
         public String with = "";
 
-        @Parameter(names = {"--reuse-font"}, description = "reuse the font used in the pdf for the matched word. depending on the pdf outputs might not be as exptected (e.g. missing letters)")
+        @Parameter(names = {"--reuse-font"}, description = "reuse the font used in the pdf for the matched word. depending on the pdf output might not be as exptected (e.g. missing letters)")
         public boolean reuseFont = false;
     }
 
@@ -67,7 +65,7 @@ public class SupersedeText implements PdfTask<SupersedeText.SupersedeTextOptions
                     PdfTextExtractor.getTextFromPage(reader, p, strategy);
 
                     for (LocationTextExtractionStrategyEx.SearchResult result : strategy.getSearchResults()) {
-                        System.out.println("Found at: " + result.getX() + ", " + result.getY() + " " + result.getWidth() + "x" + result.getHeight());
+                        System.out.println("Found at: " + result.getLeft() + ", " + result.getBottom() + " " + result.getWidth() + "x" + result.getHeight());
 
                         cleanUpLocations.add(new PdfCleanUpLocation(p, result.getBounds(), BaseColor.WHITE));
                     }
@@ -86,7 +84,7 @@ public class SupersedeText implements PdfTask<SupersedeText.SupersedeTextOptions
                         Font rf = null;
 
                         if (options.reuseFont) {
-                            String origFontName = findFontPdfName(reader, result.getTextRenderInfo().getFont());
+                            String origFontName = findFontPdfName(reader, result.getFont());
                             PdfIndirectReference fontRef = findFont(reader.getPageN(p).getAsDict(PdfName.RESOURCES), origFontName);
                             if (fontRef != null) {
                                 BaseFont bf = BaseFont.createFont((PRIndirectReference)fontRef);
@@ -94,7 +92,7 @@ public class SupersedeText implements PdfTask<SupersedeText.SupersedeTextOptions
                                 int style = Font.NORMAL;
                                 if (options.isBold) style |= Font.BOLD;
                                 if (options.isItalic) style |= Font.ITALIC;
-                                rf = new Font(bf, result.getHeight(), style);
+                                rf = new Font(bf, result.getFontSize(), style);
                             }
                         }
 
@@ -102,16 +100,7 @@ public class SupersedeText implements PdfTask<SupersedeText.SupersedeTextOptions
                             rf = replacementFont;
 
                         Phrase phrase = new Phrase(0, options.with, rf);
-                        ColumnText.showTextAligned(layer, Element.ALIGN_LEFT | Element.ALIGN_MIDDLE, phrase, result.getX(), result.getY() - result.getHeight(), 0);
-
-                        /*
-                        ColumnText ct = new ColumnText(cb);
-                        ct.setSimpleColumn(result.getX(), result.getY() - result.getHeight());
-
-
-                        Paragraph pz = new Paragraph();
-                        ct.addElement(pz);
-                        ct.go();*/
+                        ColumnText.showTextAligned(layer, Element.ALIGN_LEFT | Element.ALIGN_BASELINE, phrase, result.getLeft(), result.getBaselineY(), 0);
                     }
                 }
 
@@ -128,13 +117,12 @@ public class SupersedeText implements PdfTask<SupersedeText.SupersedeTextOptions
     public String findFontPdfName(PdfReader reader, DocumentFont font) {
 
         PdfDictionary dict = font.getFontDictionary();
-        //PdfObject fontd = dict.get(PdfName.BASEFONT);
         PdfName name = dict.getAsName(PdfName.BASEFONT);
         return name == null ? null : name.toString();
     }
 
     /**
-     * Extracts the font names from page or XObject resources.
+     * Get a reference to the font name with the given name if it is contained in resource
      */
     public static PdfIndirectReference findFont(PdfDictionary resource, String fontName) {
         if (resource == null)

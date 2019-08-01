@@ -1,6 +1,8 @@
 package de.renebergelt.pdfrevise.textextraction;
 
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.DocumentFont;
 import com.itextpdf.text.pdf.parser.LineSegment;
 import com.itextpdf.text.pdf.parser.LocationTextExtractionStrategy;
 import com.itextpdf.text.pdf.parser.TextRenderInfo;
@@ -39,12 +41,14 @@ public class LocationTextExtractionStrategyEx extends LocationTextExtractionStra
             int iIndex = aLineInfo.m_Text.indexOf(m_SearchText);
             while (iIndex != -1)
             {
-                TextRenderInfo aFirstLetter = aLineInfo.m_LineCharsList.get(iIndex);
-                SearchResult aSearchResult = new SearchResult(m_SearchText, aFirstLetter);
+                List<TextRenderInfo> letters = new ArrayList<>();
+                letters.addAll(aLineInfo.m_LineCharsList.subList(iIndex, iIndex + m_SearchText.length()));
+
+                SearchResult aSearchResult = new SearchResult(m_SearchText, letters);
                 this.m_SearchResultsList.add(aSearchResult);
 
                 // more occurences?
-                iIndex = aLineInfo.m_Text.indexOf(m_SearchText, iIndex + 1);
+                iIndex = aLineInfo.m_Text.indexOf(m_SearchText, iIndex + m_SearchText.length());
             }
         }
     }
@@ -128,38 +132,82 @@ public class LocationTextExtractionStrategyEx extends LocationTextExtractionStra
     public static class SearchResult
     {
         String text;
-        TextRenderInfo textRenderInfo;
+        List<TextRenderInfo> textRenderInfo;
 
-        public TextRenderInfo getTextRenderInfo() {
+        public List<TextRenderInfo> getTextRenderInfo() {
             return textRenderInfo;
         }
 
-        public float getX() {
-            Vector vTopLeft = textRenderInfo.getAscentLine().getStartPoint();
+        public float getLeft() {
+            // x of first letter
+            Vector vTopLeft = textRenderInfo.get(0).getDescentLine().getStartPoint();
             return vTopLeft.get(Vector.I1);
         }
 
-        public float getY() {
-            Vector vTopLeft = textRenderInfo.getAscentLine().getStartPoint();
-            return vTopLeft.get(Vector.I2);
+        public float getBottom() {
+            // min desc
+            float minDesc = Float.MAX_VALUE;
+            for(TextRenderInfo letter: textRenderInfo) {
+                float desc = letter.getDescentLine().getStartPoint().get(Vector.I2);
+                if (desc < minDesc) minDesc = desc;
+            }
+
+            return  minDesc;
+        }
+
+        public float getBaselineY() {
+            // return Y of Baseline of the first letter
+            return textRenderInfo.get(0).getBaseline().getStartPoint().get(Vector.I2);
         }
 
         public float getWidth() {
-            return textRenderInfo.getFont().getWidthPointKerned(text, getHeight());
+            // right x of last char - left x of first char
+            return textRenderInfo.get(textRenderInfo.size() - 1).getAscentLine().getEndPoint().get(Vector.I1) - textRenderInfo.get(0).getAscentLine().getStartPoint().get(Vector.I1);
         }
 
         public float getHeight() {
-            return textRenderInfo.getAscentLine().getStartPoint().get(Vector.I2) - textRenderInfo.getDescentLine().getStartPoint().get(Vector.I2);
+            // maximum ascent - minimum descent
+            float maxAsc = 0;
+            float minDesc = getBottom();
+            for(TextRenderInfo letter: textRenderInfo) {
+                float asc = letter.getAscentLine().getStartPoint().get(Vector.I2);
+                if (asc > maxAsc) maxAsc = asc;
+            }
+
+            // ascent is relative to the baseline
+            return maxAsc + (getBaselineY() - getBottom()) - minDesc;
+        }
+
+        /**
+         * Get the (approximate) font size
+         */
+        public float getFontSize() {
+            return getHeight() - (getBaselineY() - getBottom());
         }
 
         public Rectangle getBounds() {
-            return new Rectangle(getX(), getY(), getX() + getWidth(), getY() - getHeight());
+            return new Rectangle(getLeft(), getBottom(), getLeft() + getWidth(), getBottom() + getHeight());
         }
 
-        public SearchResult(String text, TextRenderInfo textRenderInfo)
+        /**
+         * Return a rectangle which extends from the baseline
+         */
+        public Rectangle getBaselineBounds() {
+            float descend = getBaselineY() - getBottom();
+            return new Rectangle(getLeft(), getBaselineY(), getLeft() + getWidth(), getBaselineY() + getHeight() - descend);
+        }
+
+        /**
+         * Returns the font used for the first glyph
+         */
+        public DocumentFont getFont() {
+            return textRenderInfo.get(0).getFont();
+        }
+
+        public SearchResult(String text, List<TextRenderInfo> letters)
         {
             this.text = text;
-            this.textRenderInfo = textRenderInfo;
+            this.textRenderInfo = new ArrayList(letters);
         }
     }
 

@@ -2,10 +2,7 @@ package de.renebergelt.pdfrevise.tasks;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
@@ -16,7 +13,6 @@ import com.itextpdf.text.pdf.pdfcleanup.PdfCleanUpProcessor;
 import de.renebergelt.pdfrevise.textextraction.LocationTextExtractionStrategyEx;
 import de.renebergelt.pdfrevise.types.*;
 
-import java.awt.*;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -41,7 +37,7 @@ public class BlackenText implements PdfTask<BlackenText.BlackenOptions> {
         public String what = "";
 
         @Parameter(names = {"-color"}, description = "The color to use for blackening (name or in hex format (e.g. #FFFFFF))", converter = FontOptions.ColorConverter.class)
-        public Color color = Color.BLACK;
+        public java.awt.Color color = java.awt.Color.BLACK;
     }
 
     @Override
@@ -66,8 +62,12 @@ public class BlackenText implements PdfTask<BlackenText.BlackenOptions> {
                     LocationTextExtractionStrategyEx strategy = new LocationTextExtractionStrategyEx(options.what);
                     PdfTextExtractor.getTextFromPage(reader, p, strategy);
 
+                    PdfContentByte layer = stamper.getOverContent(p);
+
                     for (LocationTextExtractionStrategyEx.SearchResult result : strategy.getSearchResults()) {
-                        cleanUpLocations.add(new PdfCleanUpLocation(p, result.getBounds(), color));
+
+                        // draw a black rect which sits on the baseline becaus eotherwise it looks a bit odd
+                        cleanUpLocations.add(new PdfCleanUpLocation(p, result.getBaselineBounds(), color));
                     }
 
                     // remove original occurences of the word
