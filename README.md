@@ -8,7 +8,7 @@ The tool uses the com.itextpdf.itext and org.apache.pdfbox libraries.
 Call with: `java -jar pdf-revise.jar [input pdf file] [options] [task1] [task1 options] [task2] [task2 options] ... `
 ```  
 Options: defined as --option_name=value
-  Tasks are executed in the order they appear n the command line
+  Tasks are executed in the order they appear on the command line
     -o, --out
       Name of the output file.
       Default: [input pdf file].out.pdf
@@ -21,6 +21,9 @@ Options: defined as --option_name=value
     add-page-numbers      Adds page numbers
       Usage: add-page-numbers [options]
         Options:
+          -b, --bold
+            Use the font's bold style
+            Default: false
           --font
             The font to use
             Default: Helvetica
@@ -34,9 +37,12 @@ Options: defined as --option_name=value
             Horizontal alignment on the page
             Default: center
             Possible Values: [near, center, far]
-          --horizontal-margin
+          --horizontal-margin, --h-margin
             Horizontal margin
             Default: 20.0
+          -i, --italic
+            Use the font's italic style
+            Default: false
           --start-at
             Numbering starts with this number
             Default: 1
@@ -48,7 +54,7 @@ Options: defined as --option_name=value
             Vertical alignment on the page
             Default: far
             Possible Values: [near, center, far]
-          --vertical-margin
+          --vertical-margin, --v-margin
             Vertical margin
             Default: 20.0
 
@@ -62,6 +68,15 @@ Options: defined as --option_name=value
 
     append      Appends the specified pdf file
       Usage: append [file to append]
+
+    blacken      Blackens the specified term in the pdf (original term is 
+            completely removed)
+      Usage: blacken [options] [text to be blackened]
+        Options:
+          -color
+            The color to use for blackening (name or in hex format (e.g. 
+            #FFFFFF)) 
+            Default: java.awt.Color[r=0,g=0,b=0]
 
     disable-copy-paste      Disables the Copy/Paste function in pdf readers
       Usage: disable-copy-paste
@@ -98,6 +113,33 @@ Options: defined as --option_name=value
 
     reverse-pages      Reverses the order of pages
       Usage: reverse-pages
+
+    supersede-text      Replaces text in a pdf by removing the old occurrence 
+            and adding new text instead (experimental!)
+      Usage: supersede-text [options] [text to be replaced]
+        Options:
+          -b, --bold
+            Use the font's bold style
+            Default: false
+          --font
+            The font to use
+            Default: Helvetica
+          --font-color
+            The font color to use (name or in hex format (e.g. #FFFFFF))
+            Default: java.awt.Color[r=0,g=0,b=0]
+          --font-size
+            The font size to use
+            Default: 10
+          -i, --italic
+            Use the font's italic style
+            Default: false
+          --reuse-font
+            reuse the font used in the pdf for the matched word. depending on 
+            the pdf output might not be as exptected (e.g. missing letters)
+            Default: false
+          --with
+            text to insert
+            Default: <empty string>
 ```
 
 ## Example
