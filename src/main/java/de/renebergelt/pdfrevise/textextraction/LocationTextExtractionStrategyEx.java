@@ -3,17 +3,16 @@ package de.renebergelt.pdfrevise.textextraction;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.DocumentFont;
-import com.itextpdf.text.pdf.parser.LineSegment;
-import com.itextpdf.text.pdf.parser.LocationTextExtractionStrategy;
-import com.itextpdf.text.pdf.parser.TextRenderInfo;
-import com.itextpdf.text.pdf.parser.Vector;
+import com.itextpdf.text.pdf.parser.*;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A text eaxtraction strategy which searches for a given text and returns the position (rectangle)
+ * A text extraction strategy which searches for a given text and returns the position (rectangle)
  * a which it was found in the document
+ * Adapted and modified version from: https://stackoverflow.com/questions/23909893/getting-coordinates-of-string-using-itextextractionstrategy-and-locationtextextr
  */
 public class LocationTextExtractionStrategyEx extends LocationTextExtractionStrategy
 {
@@ -187,7 +186,16 @@ public class LocationTextExtractionStrategyEx extends LocationTextExtractionStra
          * Get the (approximate) font size
          */
         public float getFontSize() {
-            return getHeight() - (getBaselineY() - getBottom());
+
+            try {
+                Field fieldGS = TextRenderInfo.class.getDeclaredField("gs");
+                fieldGS.setAccessible(true);
+                GraphicsState gs = (GraphicsState)fieldGS.get(textRenderInfo.get(0));
+                return gs.getFontSize();
+            }catch (NoSuchFieldException | IllegalAccessException e) {
+                // best effort
+                return getHeight() - (getBaselineY() - getBottom());
+            }
         }
 
         public Rectangle getBounds() {

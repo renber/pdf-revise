@@ -23,17 +23,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     </dependency>
     <dependency>
       <groupId>com.itextpdf</groupId>
-      <artifactId>itext-pdfa</artifactId>
-      <version>5.5.13.1</version>
-  	</dependency>
-    <dependency>
-      <groupId>com.itextpdf</groupId>
-      <artifactId>itext-xtra</artifactId>
+      <artifactId>itextpdf</artifactId>
       <version>5.5.13.1</version>
     </dependency>
     <dependency>
       <groupId>com.itextpdf</groupId>
-      <artifactId>itextpdf</artifactId>
+      <artifactId>itext-xtra</artifactId>
       <version>5.5.13.1</version>
     </dependency>
     <dependency>
