@@ -2,7 +2,11 @@
 Command line tool which allows to edit pdf files. 
 Originally, it was developed to create a non-editable draft copy of a pdf by adding watermark text and rendering all pages as images. It quickly has gained more functionality such as page extraction, high quality page rendering to image files and merging pdf files. It provides an easy to extend task model to edit pdfs.
 
+## License remarks
 The tool uses the com.itextpdf.itext and org.apache.pdfbox libraries.
+The relases provided on github use itext 5.x under the AGPL-3.0 license and therefore are also licensed as AGPL-3.0.
+
+Be aware that when adapting source code from this tool or integrating it directly with your own application's code, your code will be subject to AGPL-3.0 as well if you use itext's AGPL version.
 
 ## Usage
 Call with: `java -jar pdf-revise.jar [input pdf file] [options] [task1] [task1 options] [task2] [task2 options] ... `
@@ -156,4 +160,15 @@ Zoomed at 400%, before (left) and after (right) processing:<br>
 
 The project uses maven, so compiling and creating an executable jar is easy.
 Calling `mvn package` will package the tool and all dependencies in a single jar which can be executed.
+
+## Planned features
+
+The following features are planned to be included in the future:
+* form filling
+* adding images
+* extracting images
+* adding primitive elements (rectangles, lines ...)
+* adding arbitrary text
+* rotating pages
+* editing meta data
 
