@@ -191,7 +191,12 @@ public class LocationTextExtractionStrategyEx extends LocationTextExtractionStra
                 Field fieldGS = TextRenderInfo.class.getDeclaredField("gs");
                 fieldGS.setAccessible(true);
                 GraphicsState gs = (GraphicsState)fieldGS.get(textRenderInfo.get(0));
-                return gs.getFontSize();
+                float fontsize =  gs.getFontSize();
+
+                Field fieldTransformMatrix = TextRenderInfo.class.getDeclaredField("textToUserSpaceTransformMatrix");
+                fieldTransformMatrix.setAccessible(true);
+                Matrix textToUserSpaceTransformMatrix = (Matrix)fieldTransformMatrix.get(textRenderInfo.get(0));
+                return new Vector(0, fontsize, 0).cross(textToUserSpaceTransformMatrix).length();
             }catch (NoSuchFieldException | IllegalAccessException e) {
                 // best effort
                 return getHeight() - (getBaselineY() - getBottom());
