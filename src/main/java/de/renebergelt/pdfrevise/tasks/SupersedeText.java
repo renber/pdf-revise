@@ -21,7 +21,7 @@ public class SupersedeText implements PdfTask<SupersedeText.SupersedeTextOptions
 
     @Override
     public String getDescription() {
-        return "Superseding text";
+        return "Superseding text (i.e redacting)";
     }
 
     @Parameters(separators = "=", commandDescription = "Replaces text in a pdf by removing the old occurrence and adding new text instead (experimental!)")
@@ -80,7 +80,6 @@ public class SupersedeText implements PdfTask<SupersedeText.SupersedeTextOptions
                     PdfContentByte layer = stamper.getOverContent(p);
 
                     for(LocationTextExtractionStrategyEx.SearchResult result : strategy.getSearchResults()) {
-                        // todo: extract original font name (if possible; see https://stackoverflow.com/questions/51798084/how-do-i-extract-actual-font-names-from-a-pdf-with-itextsharp)
                         Font rf = null;
 
                         if (options.reuseFont) {
@@ -92,7 +91,13 @@ public class SupersedeText implements PdfTask<SupersedeText.SupersedeTextOptions
                                 int style = Font.NORMAL;
                                 if (options.isBold) style |= Font.BOLD;
                                 if (options.isItalic) style |= Font.ITALIC;
-                                rf = new Font(bf, result.getFontSize(), style);
+
+                                float fontSize = options.fontSize;
+                                if (fontSize <= 0.1) {
+                                    fontSize = result.getFontSize();
+                                }
+
+                                rf = new Font(bf, fontSize, style);
                             }
                         }
 
