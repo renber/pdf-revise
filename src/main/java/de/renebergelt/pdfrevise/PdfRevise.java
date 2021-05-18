@@ -19,8 +19,14 @@ public class PdfRevise {
      */
     public void run(Options opt, TaskFactory taskFactory) throws TaskFailedException {
         try (InputStream inStream = new FileInputStream(opt.inFile);
+             ByteArrayOutputStream memStream = new ByteArrayOutputStream();
              FileOutputStream outStream = new FileOutputStream(opt.outFile)) {
-            run(inStream, outStream, opt.getTasks(), taskFactory);
+
+            // copy file stream into memory, to ensure random read/write
+            IOUtils.copy(inStream, memStream);
+            ByteArrayInputStream workStream = new ByteArrayInputStream((memStream.toByteArray()));
+
+            run(workStream, outStream, opt.getTasks(), taskFactory);
         } catch (FileNotFoundException e) {
             throw new RuntimeException("input file '" + opt.inFile + "' does not exist", e);
         } catch (IOException e) {
